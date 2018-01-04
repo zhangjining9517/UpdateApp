@@ -86,6 +86,8 @@ public class CheckVersionRunnable implements Runnable {
     private boolean isHandleQzgx = false;
     /** 是否弹出toast */
     private boolean isToast = false;
+    /** 设置通知提示信息 */
+    private String notifyTitle = "";
 
     private OnEventCallbackListener mListener;
 
@@ -175,6 +177,11 @@ public class CheckVersionRunnable implements Runnable {
     //设置apk存储路径
     public CheckVersionRunnable setVersionShow(String versionShow){
         this.m_Version_show = versionShow;
+        return this;
+    }
+
+    public CheckVersionRunnable setNotifyTitle(String nTitle){
+        this.notifyTitle = nTitle;
         return this;
     }
 
@@ -365,7 +372,7 @@ public class CheckVersionRunnable implements Runnable {
             public void onClick(View v) {
                 //启动服务去下载
                 if (downloadBy == DOWNLOAD_BY_APP) {
-                    DownloadAppUtils.downloadForAutoInstall(m_ctx, m_StrApkFileUrl,m_ApkStoragePath, "_update_temp.apk", "黑熊搏击");
+                    DownloadAppUtils.downloadForAutoInstall(m_ctx, m_StrApkFileUrl,m_ApkStoragePath, "_update_temp.apk", notifyTitle);
                 }else if (downloadBy == DOWNLOAD_BY_BROWSER){
                     DownloadAppUtils.downloadForWebView(m_ctx,m_StrApkFileUrl);
                 }
