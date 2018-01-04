@@ -86,6 +86,7 @@ public class CheckVersionRunnable implements Runnable {
     private boolean isHandleQzgx = false;
     /** 是否弹出toast */
     private boolean isToast = false;
+    
     /** 设置通知提示信息 */
     private String notifyTitle = "";
 
