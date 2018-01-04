@@ -434,7 +434,7 @@ public class CheckVersionRunnable implements Runnable {
             public void onClick(View v) {
                 //启动服务去下载
                 if (downloadBy == DOWNLOAD_BY_APP) {
-                    DownloadAppUtils.downloadForAutoInstall(m_ctx, m_StrApkFileUrl,m_ApkStoragePath, "_update_temp.apk", "黑熊搏击");
+                    DownloadAppUtils.downloadForAutoInstall(m_ctx, m_StrApkFileUrl,m_ApkStoragePath, "_update_temp.apk",notifyTitle);
                 }else if (downloadBy == DOWNLOAD_BY_BROWSER){
                     DownloadAppUtils.downloadForWebView(m_ctx,m_StrApkFileUrl);
                 }
