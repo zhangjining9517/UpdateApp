@@ -24,7 +24,10 @@ public class MainActivity extends AppCompatActivity {
                     .setServerVersion("")//服务器最新版本
                     .setUpdateMsg("")//更新信息
                     .isUseCostomDialog(true)//是否使用自定义对话框
+                    .setToast(true) //弹出toast
+                    .setNotifyTitle("海拳")
                     .setVersionShow("");//是否app展示版本
+
             //设置不再提醒的监听回调
             runnable.setListener(new CheckVersionRunnable.OnEventCallbackListener() {
                 @Override

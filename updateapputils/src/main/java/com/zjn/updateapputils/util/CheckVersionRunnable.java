@@ -220,7 +220,9 @@ public class CheckVersionRunnable implements Runnable {
                 m_Handler.sendMessage(msg);
             } else {
                 if(isToast){
-                    Toast.makeText(m_ctx,"当前为最新版本！",Toast.LENGTH_SHORT).show();
+                    msg.obj = "当前为最新版本！";
+                    msg.what = TOAST_MESSAGE;
+                    m_Handler.sendMessage(msg);
                 }
                 // // 初始化程序下载是否成功的标记
                 // UserInfo.setDownLoadSucess("0", m_ctx);
