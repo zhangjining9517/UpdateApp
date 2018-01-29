@@ -1,8 +1,10 @@
 package com.zjn.updateapputils.util;
 
 import android.app.DownloadManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.text.TextUtils;
 
@@ -17,6 +19,7 @@ public class DownloadAppUtils {
     public static long downloadUpdateApkId = -1;//下载更新Apk 下载任务对应的Id
     public static String downloadUpdateApkFilePath;//下载更新Apk 文件路径
 
+    private static BroadcastReceiver downLoadBroadcast;
     /**
      * 通过浏览器下载APK包
      * @param context
@@ -36,17 +39,21 @@ public class DownloadAppUtils {
      * @param context
      * @param url
      */
-    public static void downloadForAutoInstall(Context context, String url,String filePath, String fileName, String title) {
+    public static long downloadForAutoInstall(Context context, String url,String filePath, String fileName, String title) {
         if (TextUtils.isEmpty(url)) {
-            return;
+            return -1;
         }
         try {
             Uri uri = Uri.parse(url);
             DownloadManager downloadManager = (DownloadManager) context
                     .getSystemService(Context.DOWNLOAD_SERVICE);
             DownloadManager.Request request = new DownloadManager.Request(uri);
+            /**设置用于下载时的网络状态*/
+            request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE);
             //在通知栏中显示
             request.setVisibleInDownloadsUi(true);
+            /**设置漫游状态下是否可以下载*/
+            request.setAllowedOverRoaming(false);
             request.setTitle(title);
             downloadUpdateApkFilePath = filePath + File.separator + fileName;
             // 若存在，则删除
@@ -54,14 +61,14 @@ public class DownloadAppUtils {
             Uri fileUri = Uri.parse("file://" + downloadUpdateApkFilePath);
             request.setDestinationUri(fileUri);
             downloadUpdateApkId = downloadManager.enqueue(request);
+//            downloadManager.openDownloadedFile(downloadUpdateApkId);
         } catch (Exception e) {
             e.printStackTrace();
             downloadForWebView(context, url);
         }finally {
-//            registerReceiver(receiver, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
         }
+        return downloadUpdateApkId;
     }
-
 
     private static boolean deleteFile(String fileStr) {
         File file = new File(fileStr);

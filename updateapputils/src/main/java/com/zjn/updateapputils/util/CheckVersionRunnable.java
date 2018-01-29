@@ -2,15 +2,21 @@ package com.zjn.updateapputils.util;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.DownloadManager;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.database.ContentObserver;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.BuildConfig;
 import android.support.v4.content.FileProvider;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -25,6 +31,8 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 类名:CheckVersionRunnable 说明:检查版本号线程
@@ -90,6 +98,8 @@ public class CheckVersionRunnable implements Runnable {
     private String notifyTitle = "";
 
     private OnEventCallbackListener mListener;
+    //下载任务Id
+    private long downloadUpdateApkId;
 
     public OnEventCallbackListener getListener() {
         return mListener;
@@ -374,7 +384,7 @@ public class CheckVersionRunnable implements Runnable {
             public void onClick(View v) {
                 //启动服务去下载
                 if (downloadBy == DOWNLOAD_BY_APP) {
-                    DownloadAppUtils.downloadForAutoInstall(m_ctx, m_StrApkFileUrl,m_ApkStoragePath, "_update_temp.apk", notifyTitle);
+                    downloadUpdateApkId = DownloadAppUtils.downloadForAutoInstall(m_ctx, m_StrApkFileUrl,m_ApkStoragePath, "_update_temp.apk", notifyTitle);
                 }else if (downloadBy == DOWNLOAD_BY_BROWSER){
                     DownloadAppUtils.downloadForWebView(m_ctx,m_StrApkFileUrl);
                 }
@@ -434,7 +444,8 @@ public class CheckVersionRunnable implements Runnable {
             public void onClick(View v) {
                 //启动服务去下载
                 if (downloadBy == DOWNLOAD_BY_APP) {
-                    DownloadAppUtils.downloadForAutoInstall(m_ctx, m_StrApkFileUrl,m_ApkStoragePath, "_update_temp.apk",notifyTitle);
+                    registerBroadcast();
+                    downloadUpdateApkId = DownloadAppUtils.downloadForAutoInstall(m_ctx, m_StrApkFileUrl,m_ApkStoragePath, "_update_temp.apk",notifyTitle);
                 }else if (downloadBy == DOWNLOAD_BY_BROWSER){
                     DownloadAppUtils.downloadForWebView(m_ctx,m_StrApkFileUrl);
                 }
@@ -453,5 +464,49 @@ public class CheckVersionRunnable implements Runnable {
                 normalDialog.dismiss();
             }
         });
+    }
+
+    /**
+     * 注册广播
+     */
+    private void registerBroadcast() {
+        /**注册service 广播 1.任务完成时 2.进行中的任务被点击*/
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
+        intentFilter.addAction(Intent.ACTION_PACKAGE_ADDED);
+        m_ctx.registerReceiver(new DownLoadBroadcast(), intentFilter);
+    }
+
+    /**
+     * 接受下载完成广播
+     */
+    private class DownLoadBroadcast extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            long downId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
+            String  action = intent.getAction();
+            switch (action) {
+                case DownloadManager.ACTION_DOWNLOAD_COMPLETE:
+                    if (downloadUpdateApkId == downId && downId != -1) {
+                        // 获取已下载的文件 72370 29680
+                        File updateFile = new File(m_ApkStoragePath, "_update_temp.apk");
+                        Message msg = Message.obtain();
+                        msg.obj = updateFile;
+                        msg.what = INSTALL_FILE;
+                        m_Handler.sendMessage(msg);
+                    }
+                    break;
+                case Intent.ACTION_PACKAGE_ADDED:
+                    File file = new File(m_ApkStoragePath, "_update_temp.apk");
+                    if(file.exists()) {
+                        Log.e("版本更新打包调试","已删除");
+                        file.delete();
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 }
