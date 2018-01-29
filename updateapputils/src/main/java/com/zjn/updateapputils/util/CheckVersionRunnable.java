@@ -497,13 +497,13 @@ public class CheckVersionRunnable implements Runnable {
                         m_Handler.sendMessage(msg);
                     }
                     break;
-                case Intent.ACTION_PACKAGE_ADDED:
-                    File file = new File(m_ApkStoragePath, "_update_temp.apk");
-                    if(file.exists()) {
-                        Log.e("版本更新打包调试","已删除");
-                        file.delete();
-                    }
-                    break;
+//                case Intent.ACTION_PACKAGE_ADDED:
+//                    File file = new File(m_ApkStoragePath, "_update_temp.apk");
+//                    if(file.exists()) {
+//                        Log.e("版本更新打包调试","已删除");
+//                        file.delete();
+//                    }
+//                    break;
                 default:
                     break;
             }
