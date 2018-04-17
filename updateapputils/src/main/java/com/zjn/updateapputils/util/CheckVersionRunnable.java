@@ -579,8 +579,11 @@ public class CheckVersionRunnable implements Runnable {
          */
         @Override
         public void onChange(boolean selfChange) {
-            scheduledExecutorService.scheduleAtFixedRate(progressRunnable, 0, 2, TimeUnit.SECONDS);
-        }
+            try{
+                scheduledExecutorService.scheduleAtFixedRate(progressRunnable, 0, 2, TimeUnit.SECONDS);
+            }catch(Exception e){
+
+            }        }
     }
     /**
      * 展示自定义对话框
