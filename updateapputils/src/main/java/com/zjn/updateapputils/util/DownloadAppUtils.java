@@ -1,10 +1,8 @@
 package com.zjn.updateapputils.util;
 
 import android.app.DownloadManager;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.net.Uri;
 import android.text.TextUtils;
 
@@ -19,7 +17,18 @@ public class DownloadAppUtils {
     public static long downloadUpdateApkId = -1;//下载更新Apk 下载任务对应的Id
     public static String downloadUpdateApkFilePath;//下载更新Apk 文件路径
 
-    private static BroadcastReceiver downLoadBroadcast;
+    /**
+     * 安装APK
+     * @param context
+     * @param apkPath 安装包的路径
+     */
+    public static void installApk(Context context, Uri apkPath) {
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_VIEW);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setDataAndType(apkPath, "application/vnd.android.package-archive");
+        context.startActivity(intent);
+    }
     /**
      * 通过浏览器下载APK包
      * @param context
@@ -32,9 +41,8 @@ public class DownloadAppUtils {
         context.startActivity(intent);
     }
 
-
     /**
-     * 下载更新apk包
+     * 下载更新apk包(通知栏下载)
      * 权限:1,<uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
      * @param context
      * @param url
@@ -70,7 +78,7 @@ public class DownloadAppUtils {
         return downloadUpdateApkId;
     }
 
-    private static boolean deleteFile(String fileStr) {
+    public static boolean deleteFile(String fileStr) {
         File file = new File(fileStr);
         return file.delete();
     }
