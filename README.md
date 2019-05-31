@@ -15,7 +15,8 @@
 
 # Usage
 	基本用法
-	默认从服务器请求版本更新信息，拿到下载路径，传入文件存储路径，更新版本信息，服务器版本信息，更新内容，是否弹出自定义对话框，设置通知title信息，等内容
+	默认从服务器请求版本更新信息，拿到下载路径，传入文件存储路径，更新版本信息，服务器版本信息，更新内容，是否弹出自定义对话框，  
+	设置通知title信息，等内容
 	CheckVersionRunnable runnable = CheckVersionRunnable.from(MainActivity.this)
 					.setApkPath(SystemDir.DIR_UPDATE_APK)//文件存储路径
 					.setDownLoadUrl(mbean.getDownUrl())
