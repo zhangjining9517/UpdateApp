@@ -9,9 +9,9 @@
 	}  
 
   
-dependencies {  
-	   implementation 'com.github.zhangjining9517:UpdateApp:Tag'  
-}
+	dependencies {  
+		implementation 'com.github.zhangjining9517:UpdateApp:Tag'  
+	}
 
 # Usage
 基本用法
