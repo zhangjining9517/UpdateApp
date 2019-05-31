@@ -1,15 +1,13 @@
 # UpdateApp [![](https://jitpack.io/v/zhangjining9517/UpdateApp.svg)](https://jitpack.io/#zhangjining9517/UpdateApp)
 版本更新库，支持下载，断点下载，下载完成安装等功能
 
-# Gradle [![](https://jitpack.io/v/zhangjining9517/UpdateApp.svg)](https://jitpack.io/#zhangjining9517/UpdateApp)
-allprojects {    
+# Gradle [![](https://jitpack.io/v/zhangjining9517/UpdateApp.svg)](https://jitpack.io/#zhangjining9517/UpdateApp) 
 	repositories {  
-		...  
 		maven {  
 			url 'https://jitpack.io'  
 		}  
 	}  
-}
+
   
 dependencies {
 	   implementation 'com.github.zhangjining9517:UpdateApp:Tag'
